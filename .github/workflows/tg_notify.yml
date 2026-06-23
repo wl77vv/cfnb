@@ -15,18 +15,18 @@ jobs:
 
       - name: Read IP
         run: |
-          echo "### Latest IP" > /tmp/msg.md
-          echo '\`\`\`' >> /tmp/msg.md
-          cat ip.txt >> /tmp/msg.md || echo "no ip.txt"
-          echo '\`\`\`' >> /tmp/msg.md
-          echo "" >> /tmp/msg.md
-          date >> /tmp/msg.md
-          cat /tmp/msg.md
+          echo "### Latest IP" > msg.md
+          echo '\`\`\`' >> msg.md
+          cat ip.txt >> msg.md || echo "no ip.txt"
+          echo '\`\`\`' >> msg.md
+          echo "" >> msg.md
+          date >> msg.md
+          cat msg.md
 
       - name: Send TG
         uses: appleboy/telegram-action@v1.0.1
         with:
           to: ${{ secrets.TG_CHAT_ID }}
           token: ${{ secrets.TG_BOT_TOKEN }}
-          message_file: /tmp/msg.md
+          message_file: msg.md
           format: markdown
