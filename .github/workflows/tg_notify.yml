@@ -1,9 +1,9 @@
-name: TG通知 - IP优选更新
+name: TG Notification
 
-on:
+'on':
   push:
     paths:
-      - 'ip.txt'
+      - ip.txt
     branches:
       - main
 
@@ -11,17 +11,19 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: 读取最新IP
+      - uses: actions/checkout@v4
+
+      - name: Read IP
         run: |
-          echo "### 最新优选IP" > /tmp/msg.md
-          echo '```' >> /tmp/msg.md
+          echo "### Latest IP" > /tmp/msg.md
+          echo '\`\`\`' >> /tmp/msg.md
           cat ip.txt >> /tmp/msg.md || echo "no ip.txt"
-          echo '```' >> /tmp/msg.md
+          echo '\`\`\`' >> /tmp/msg.md
           echo "" >> /tmp/msg.md
-          echo "更新时间: $(date)" >> /tmp/msg.md
+          date >> /tmp/msg.md
           cat /tmp/msg.md
 
-      - name: 发送TG通知
+      - name: Send TG
         uses: appleboy/telegram-action@v1.1.0
         with:
           to: ${{ secrets.TG_CHAT_ID }}
