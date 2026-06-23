@@ -1,0 +1,35 @@
+name: TG通知 - IP优选更新
+
+on:
+  push:
+    paths:
+      - 'ip.txt'
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 读取最新IP
+        id: read_ip
+        run: |
+          echo "### 最新优选IP" > /tmp/msg.md
+          echo '```' >> /tmp/msg.md
+          cat ip.txt >> /tmp/msg.md
+          echo '```' >> /tmp/msg.md
+          echo "" >> /tmp/msg.md
+          echo "更新时间: $(date '+%Y-%m-%d %H:%M:%S')" >> /tmp/msg.md
+          cat /tmp/msg.md
+
+      - name: 发送Telegram通知
+        if: ${{ secrets.TG_BOT_TOKEN != '' && secrets.TG_CHAT_ID != '' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TG_CHAT_ID }}
+          token: ${{ secrets.TG_BOT_TOKEN }}
+          message_file: /tmp/msg.md
+          format: markdown
